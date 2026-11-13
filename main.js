@@ -20,4 +20,83 @@ function updateDisplay() {
   }
 }
 
+function appendNumber(number){
+  if (number === "." && currentOperand.includes(".")) {
+    return;
+  }
+
+  if (currentOperand === "0" && number ! == "."){
+    currentOperand = number.toString();
+  } else {
+    currentOperand = currentOperand.toString() + number.tostring();
+  }
+}
+
+function chooseOperation(op){
+  if (currentOperand === ""){
+    return;
+  }
+
+
+if (previousOperand !== ""){
+  compute();
+}
+
+operation = op;
+previousOperand = currentOperand;
+currentOperand = "";
+}
+
+function compute(){
+  let computation;
+  const prev = parseFloat(currentOperand)
+  const current = parseFloat (currentOperand);
+
+  if (isNaN(prev) || isNaN(current)) {
+    return;
+  }
+
+  switch (operation) {
+    case "+":
+      computation = prev + current;
+      break;
+    case "-":
+        compuation = prev - current;
+      break;
+    case "*":
+       compuation = prev * current;
+      break;
+    case"÷":
+    if (current === 0) {
+      alert("Division by zero error");
+      CleearAll();
+      return;
+    }
+    compuation = prev / current;
+    break;
+    default:
+      return;
+  }
+
+  currentOperand = Math.round(computation* 100000000) / 100000000
+  operationOperand = "";
+}
+
+function CleearAll() {
+  currentOperand = "0";
+  previousOperand = "";
+  operation = undefined;
+}
+
+function deleteNumber() {
+  if (currentOperand === "0"){
+    return;
+  }
+
+if (currentOperand.length == 1) {
+  currentOperand = "0;"
+} else {
+  currentOperand = currentOperand.toString().slice(0, -1);
+}
+}
 updateDisplay();
