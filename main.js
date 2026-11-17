@@ -14,43 +14,42 @@ let operation = undefined;
 function updateDisplay() {
   currentOperandElement.innerText = currentOperand;
   if (operation != null) {
-    previousOperandElement.innerText = `${previousOperand}${operation}`;
+    previousOperandElement.innerText = `${previousOperand} ${operation}`;
   } else {
     previousOperandElement.innerText = "";
   }
 }
 
-function appendNumber(number){
+function appendNumber(number) {
   if (number === "." && currentOperand.includes(".")) {
     return;
   }
 
-  if (currentOperand === "0" && number ! == "."){
+  if (currentOperand === "0" && number !== ".") {
     currentOperand = number.toString();
   } else {
-    currentOperand = currentOperand.toString() + number.tostring();
+    currentOperand = currentOperand.toString() + number.toString();
   }
 }
 
-function chooseOperation(op){
-  if (currentOperand === ""){
+function chooseOperation(op) {
+  if (currentOperand === "") {
     return;
   }
 
+  if (previousOperand !== "") {
+    compute();
+  }
 
-if (previousOperand !== ""){
-  compute();
+  operation = op;
+  previousOperand = currentOperand;
+  currentOperand = "";
 }
 
-operation = op;
-previousOperand = currentOperand;
-currentOperand = "";
-}
-
-function compute(){
+function compute() {
   let computation;
-  const prev = parseFloat(currentOperand)
-  const current = parseFloat (currentOperand);
+  const prev = parseFloat(previousOperand);
+  const current = parseFloat(currentOperand);
 
   if (isNaN(prev) || isNaN(current)) {
     return;
@@ -61,42 +60,71 @@ function compute(){
       computation = prev + current;
       break;
     case "-":
-        compuation = prev - current;
+      computation = prev - current;
       break;
     case "*":
-       compuation = prev * current;
+      computation = prev * current;
       break;
-    case"÷":
-    if (current === 0) {
-      alert("Division by zero error");
-      CleearAll();
-      return;
-    }
-    compuation = prev / current;
-    break;
+    case "÷":
+      if (current === 0) {
+        alert("Division by zero error");
+        clearAll();
+        return;
+      }
+      computation = prev / current;
+      break;
     default:
       return;
   }
 
-  currentOperand = Math.round(computation* 100000000) / 100000000
+  currentOperand = Math.round(computation * 100000000) / 100000000;
   operationOperand = "";
 }
 
-function CleearAll() {
+function clearAll() {
   currentOperand = "0";
   previousOperand = "";
   operation = undefined;
 }
 
 function deleteNumber() {
-  if (currentOperand === "0"){
+  if (currentOperand === "0") {
     return;
   }
 
-if (currentOperand.length == 1) {
-  currentOperand = "0;"
-} else {
-  currentOperand = currentOperand.toString().slice(0, -1);
+  if (currentOperand.length == 1) {
+    currentOperand = "0;";
+  } else {
+    currentOperand = currentOperand.toString().slice(0, -1);
+  }
 }
-}
+
+numberButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    appendNumber(button.getAttribute("data-number"));
+    updateDisplay();
+  });
+});
+
+operatorButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    chooseOperation(button.getAttribute("data-operator"));
+    updateDisplay();
+  });
+});
+
+equalsButton.addEventListener("click", () => {
+  compute();
+  updateDisplay();
+});
+clearButton.addEventListener("click", () => {
+  clearAll();
+  updateDisplay();
+});
+
+deleteButton.addEventListener("click", () => {
+  deleteNumber();
+  updateDisplay();
+});
+
 updateDisplay();
